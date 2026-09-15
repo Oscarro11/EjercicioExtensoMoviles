@@ -7,10 +7,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import kotlinx.serialization.Serializable
 import plat.rickandmorty.app.ui.theme.RickAndMortyTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +21,71 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             RickAndMortyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = LoginScreenDestination,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                    ) {
+                        composable<LoginScreenDestination> {
+                            LoginScreen(
+                                onLoginClick = {
+                                    navController.navigate(
+                                        route = CharactersScreenDestination
+                                    ) {
+                                        popUpTo<LoginScreenDestination> {
+                                            inclusive = true
+                                        }
+                                    }
+                                }
+                            )
+                        }
+
+                        composable<CharactersScreenDestination> {
+                            CharactersScreen(
+                                onCharacterClick = { id: Int ->
+                                    navController.navigate(
+                                        route = CharacterInfoScreenDestination(id = id)
+                                    )
+                                }
+                            )
+                        }
+
+                        composable<CharacterInfoScreenDestination> { backStackEntry ->
+                            val destination = backStackEntry.toRoute<CharacterInfoScreenDestination>()
+                            val character = CharacterDb.getCharacterById(destination.id)
+
+                            CharacterInfoScreen(
+                                character = character,
+                                onBackClick = {
+                                    navController.navigate(
+                                        route = CharactersScreenDestination
+                                    ) {
+                                        popUpTo(0)
+                                    }
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+@Serializable
+data object LoginScreenDestination
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    RickAndMortyTheme {
-        Greeting("Android")
-    }
-}
+@Serializable
+data object CharactersScreenDestination
+
+@Serializable
+data class CharacterInfoScreenDestination(
+    val id: Int
+)
