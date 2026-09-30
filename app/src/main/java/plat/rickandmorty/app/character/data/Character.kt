@@ -1,4 +1,4 @@
-package plat.rickandmorty.app
+package plat.rickandmorty.app.character.data
 
 data class Character(
     val id: Int,

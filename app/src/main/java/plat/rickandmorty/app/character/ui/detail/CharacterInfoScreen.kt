@@ -1,10 +1,8 @@
-package plat.rickandmorty.app
+package plat.rickandmorty.app.character.ui.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,12 +21,34 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import coil3.compose.AsyncImage
+import plat.rickandmorty.app.R
+import plat.rickandmorty.app.character.data.Character
+import plat.rickandmorty.app.character.data.CharacterDb
+import plat.rickandmorty.app.core.InfoRow
+
+@Composable
+fun CharacterInfoRoute(
+    characterId: Int,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    val character = CharacterDb.getCharacterById(characterId)
+
+    CharacterInfoScreen(
+        character = character,
+        onBackClick = onBackClick,
+        modifier = modifier
+    )
+}
 
 //This Composable cant be previewed, due to using an online Image
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun CharacterInfoScreen(character: Character, onBackClick: () -> Unit, modifier: Modifier = Modifier){
-
+private fun CharacterInfoScreen(
+    character: Character,
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -76,29 +96,9 @@ fun CharacterInfoScreen(character: Character, onBackClick: () -> Unit, modifier:
             modifier = Modifier
                 .padding(30.dp)
         ) {
-            ShortInfo(category = "Species", info = character.species)
-            ShortInfo(category = "Status", info = character.status)
-            ShortInfo(category = "Gender", info = character.gender)
+            InfoRow(label = "Species", data = character.species)
+            InfoRow(label = "Status", data = character.status)
+            InfoRow(label = "Gender", data = character.gender)
         }
-    }
-}
-
-@Composable
-fun ShortInfo(category: String, info: String, modifier: Modifier = Modifier){
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Text(
-            text = "$category:",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        Text(
-            text = info,
-            style = MaterialTheme.typography.bodyMedium
-        )
     }
 }

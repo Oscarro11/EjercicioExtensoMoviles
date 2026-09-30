@@ -1,4 +1,4 @@
-package plat.rickandmorty.app
+package plat.rickandmorty.app.character.data
 
 object CharacterDb {
     private val characters: List<Character> = listOf(

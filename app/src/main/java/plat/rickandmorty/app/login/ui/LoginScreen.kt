@@ -1,4 +1,4 @@
-package plat.rickandmorty.app
+package plat.rickandmorty.app.login.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -13,10 +13,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-
+import plat.rickandmorty.app.R
 
 @Composable
-fun LoginScreen(onLoginClick: () -> Unit, modifier: Modifier = Modifier){
+fun LoginRoute(
+    onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
+    //Data extraction
+
+    LoginScreen(
+        onLoginClick = onLoginClick,
+        modifier = modifier
+    )
+}
+@Composable
+private fun LoginScreen(
+    onLoginClick: () -> Unit,
+    modifier: Modifier = Modifier
+){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,

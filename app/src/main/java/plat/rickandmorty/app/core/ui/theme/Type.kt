@@ -1,4 +1,4 @@
-package plat.rickandmorty.app.ui.theme
+package plat.rickandmorty.app.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

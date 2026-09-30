@@ -1,4 +1,4 @@
-package plat.rickandmorty.app
+package plat.rickandmorty.app.character.ui.list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,21 +17,39 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarColors
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import coil3.compose.AsyncImage
+import plat.rickandmorty.app.character.data.Character
+import plat.rickandmorty.app.character.data.CharacterDb
+
+@Composable
+fun CharactersRoute(
+    onCharacterClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+){
+    //data retrieval
+    CharactersScreen(
+        characters = CharacterDb.getAllCharacters(),
+        onCharacterClick = onCharacterClick,
+        modifier = modifier
+    )
+}
 
 //These Composables cant be previewed, due to using an online Image
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun CharactersScreen(onCharacterClick: (Int) -> Unit, modifier: Modifier = Modifier){
+private fun CharactersScreen(
+    characters: List<Character>,
+    onCharacterClick: (Int) -> Unit,
+    modifier: Modifier = Modifier
+){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -41,22 +59,21 @@ fun CharactersScreen(onCharacterClick: (Int) -> Unit, modifier: Modifier = Modif
                 text = "Characters",
                 fontWeight = FontWeight.Bold
             ) },
-            colors = TopAppBarColors(
+            colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = MaterialTheme.colorScheme.primary,
-                scrolledContainerColor = Color.Unspecified,
-                navigationIconContentColor = Color.Unspecified,
-                titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                actionIconContentColor = Color.Unspecified,
-                subtitleContentColor = Color.Unspecified
+                titleContentColor = MaterialTheme.colorScheme.onPrimary
             )
         )
 
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(CharacterDb.getAllCharacters()) {character ->
+            items(characters) { character ->
                 CharacterCard(
-                    character = character,
+                    image = character.image,
+                    name = character.name,
+                    species = character.species,
+                    status = character.status,
                     modifier = modifier
                         .height(100.dp)
                         .clickable(
@@ -73,7 +90,10 @@ fun CharactersScreen(onCharacterClick: (Int) -> Unit, modifier: Modifier = Modif
 
 @Composable
 private fun CharacterCard(
-    character: Character,
+    image: String,
+    name: String,
+    species: String,
+    status: String,
     modifier: Modifier = Modifier
 ){
     Row(
@@ -88,7 +108,7 @@ private fun CharacterCard(
                 .weight(0.2f)
         ) {
             AsyncImage(
-                model = character.image,
+                model = image,
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
@@ -103,7 +123,7 @@ private fun CharacterCard(
                 .padding(5.dp)
         ) {
             Text(
-                text = character.name,
+                text = name,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.ExtraBold,
                 fontSize = 5.em
@@ -114,7 +134,7 @@ private fun CharacterCard(
             )
 
             Text(
-                text = "${character.species} - ${character.status}",
+                text = "$species - $status",
                 style = MaterialTheme.typography.bodyMedium
             )
         }
