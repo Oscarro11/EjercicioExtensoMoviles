@@ -61,7 +61,7 @@ private fun CharacterInfoScreen(
                     onClick = onBackClick
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                        painter = painterResource(id = R.drawable.arrow_back),
                         contentDescription = null
                     )
                 }

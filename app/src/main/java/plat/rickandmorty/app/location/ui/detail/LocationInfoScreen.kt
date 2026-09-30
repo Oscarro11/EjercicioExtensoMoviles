@@ -65,7 +65,7 @@ private fun LocationInfoScreen(
                         onClick = onBackClick
                     ) {
                         Icon(
-                            painter = painterResource(R.drawable.baseline_arrow_back_24),
+                            painter = painterResource(R.drawable.arrow_back),
                             contentDescription = null
                         )
                     }

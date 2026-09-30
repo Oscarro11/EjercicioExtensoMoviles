@@ -42,9 +42,9 @@ enum class MainDestination(
     val icon: Int,
     val contentDescription: String? = null
 ) {
-    CHARACTERS(CharactersDestination, "Characters", R.drawable.group_24dp_000000_fill0_wght400_grad0_opsz24),
-    LOCATIONS(LocationsDestination, "Locations", R.drawable.globe_24dp_000000_fill0_wght400_grad0_opsz24),
-    PROFILE(ProfileDestination, "Profile", R.drawable.person_24dp_000000_fill0_wght400_grad0_opsz24)
+    CHARACTERS(CharactersDestination, "Characters", R.drawable.users),
+    LOCATIONS(LocationsDestination, "Locations", R.drawable.world),
+    PROFILE(ProfileDestination, "Profile", R.drawable.user)
 }
 
 @Composable

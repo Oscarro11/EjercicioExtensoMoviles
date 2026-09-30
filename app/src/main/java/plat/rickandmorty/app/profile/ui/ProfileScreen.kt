@@ -27,7 +27,7 @@ fun ProfileRoute(
     //Retrieval of profile data by id
 
     ProfileScreen(
-        iconId = R.drawable.person_24dp_000000_fill0_wght400_grad0_opsz24,
+        iconId = R.drawable.user,
         name = "Oscar Rodrigo Melchor Estrada",
         license = "25216",
         modifier = modifier,
@@ -89,7 +89,7 @@ private fun ProfileScreen(
 @Composable
 fun PreviewProfileScreen(){
     ProfileScreen(
-        iconId = R.drawable.person_24dp_000000_fill0_wght400_grad0_opsz24,
+        iconId = R.drawable.user,
         name = "Oscar Rodrigo Melchor Estrada",
         license = "25216"
     )
