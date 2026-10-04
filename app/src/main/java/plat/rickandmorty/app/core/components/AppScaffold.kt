@@ -1,4 +1,4 @@
-package plat.rickandmorty.app.core
+package plat.rickandmorty.app.core.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon

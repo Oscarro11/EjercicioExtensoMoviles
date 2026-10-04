@@ -12,26 +12,60 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import plat.rickandmorty.app.chores.ui.AppStateContent
+import plat.rickandmorty.app.core.data.AppState
+import plat.rickandmorty.app.core.data.Event
 import plat.rickandmorty.app.location.data.Location
 import plat.rickandmorty.app.location.data.LocationDb
+import plat.rickandmorty.app.location.data.list.LocationsViewModel
 
 @Composable
 fun LocationsRoute(
-    onLocationClick: (Int) -> Unit
+    onLocationClick: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: LocationsViewModel = viewModel()
 ){
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     LocationsScreen(
-        locations = LocationDb.getAllLocations(),
+        state = state,
         onLocationClick = onLocationClick,
-        modifier = Modifier.fillMaxSize()
+        onViewModelChange = viewModel::onChange,
+        modifier = modifier
     )
 }
 
 @Composable
 private fun LocationsScreen(
+    state: AppState<List<Location>>,
+    onLocationClick: (Int) -> Unit,
+    onViewModelChange: (Event) -> Unit,
+    modifier: Modifier = Modifier
+){
+    AppStateContent(
+        state = state,
+        errorMessage = "Error al cargar la lista de localizaciones. Inténtelo de nuevo",
+        onLoadingClick = { onViewModelChange(Event.ClickLoading) },
+        onRetryClick = { onViewModelChange(Event.ClickRetry) },
+        modifier = modifier
+    ) { locations ->
+        LocationsContent(
+            locations = locations,
+            onLocationClick = onLocationClick,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun LocationsContent(
     locations: List<Location>,
     onLocationClick: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -82,8 +116,8 @@ private fun LocationRow(
 
 @Preview(showBackground = true)
 @Composable
-private fun PreviewLocationsScreen(){
-    LocationsScreen(
+private fun PreviewLocationsContent(){
+    LocationsContent(
         locations = LocationDb.getAllLocations(),
         onLocationClick = {},
         modifier = Modifier.fillMaxSize()

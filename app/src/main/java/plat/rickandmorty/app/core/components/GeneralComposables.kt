@@ -1,4 +1,4 @@
-package plat.rickandmorty.app.core
+package plat.rickandmorty.app.core.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background

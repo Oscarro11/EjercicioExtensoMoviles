@@ -19,33 +19,63 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import plat.rickandmorty.app.character.data.Character
-import plat.rickandmorty.app.character.data.CharacterDb
+import plat.rickandmorty.app.character.data.list.CharactersViewModel
+import plat.rickandmorty.app.chores.ui.AppStateContent
+import plat.rickandmorty.app.core.data.AppState
+import plat.rickandmorty.app.core.data.Event
 
 @Composable
 fun CharactersRoute(
     onCharacterClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CharactersViewModel = viewModel()
 ){
-    //data retrieval
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     CharactersScreen(
-        characters = CharacterDb.getAllCharacters(),
+        state = state,
         onCharacterClick = onCharacterClick,
+        onViewModelChange = viewModel::onChange,
         modifier = modifier
     )
 }
 
-//These Composables cant be previewed, due to using an online Image
+@Composable
+private fun CharactersScreen(
+    state: AppState<List<Character>>,
+    onCharacterClick: (Int) -> Unit,
+    onViewModelChange: (Event) -> Unit,
+    modifier: Modifier = Modifier
+){
+    AppStateContent(
+        state = state,
+        errorMessage = "Error al cargar la lista de personajes. Inténtelo de nuevo",
+        onLoadingClick = { onViewModelChange(Event.ClickLoading) },
+        onRetryClick = { onViewModelChange(Event.ClickRetry) },
+        modifier = modifier
+    ) { characters ->
+        CharactersContent(
+            characters = characters,
+            onCharacterClick = onCharacterClick,
+            modifier = modifier
+        )
+    }
+}
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun CharactersScreen(
+private fun CharactersContent(
     characters: List<Character>,
     onCharacterClick: (Int) -> Unit,
     modifier: Modifier = Modifier

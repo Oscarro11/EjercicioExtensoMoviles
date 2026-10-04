@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import plat.rickandmorty.app.core.AppScaffold
+import plat.rickandmorty.app.core.components.AppScaffold
 import plat.rickandmorty.app.core.ui.theme.RickAndMortyTheme
 
 class MainActivity : ComponentActivity() {

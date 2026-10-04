@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import plat.rickandmorty.app.R
-import plat.rickandmorty.app.core.IconWithBackground
-import plat.rickandmorty.app.core.InfoRow
+import plat.rickandmorty.app.core.components.IconWithBackground
+import plat.rickandmorty.app.core.components.InfoRow
 
 @Composable
 fun ProfileRoute(

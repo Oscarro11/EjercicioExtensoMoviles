@@ -36,6 +36,7 @@ import plat.rickandmorty.app.profile.ui.ProfileRoute
     val id: Int
 )
 
+//TODO: change destinations to a directory called 'navigation' inside their respective screen
 enum class MainDestination(
     val route: Any,
     val label: String,
