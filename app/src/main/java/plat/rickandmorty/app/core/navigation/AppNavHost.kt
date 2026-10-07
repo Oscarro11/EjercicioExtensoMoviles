@@ -1,134 +1,150 @@
 package plat.rickandmorty.app.core.navigation
 
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.navigation
-import androidx.navigation.toRoute
-import kotlinx.serialization.Serializable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import plat.rickandmorty.app.R
-import plat.rickandmorty.app.character.ui.detail.CharacterInfoRoute
-import plat.rickandmorty.app.character.ui.list.CharactersRoute
-import plat.rickandmorty.app.location.ui.detail.LocationInfoRoute
-import plat.rickandmorty.app.location.ui.list.LocationsRoute
-import plat.rickandmorty.app.login.ui.LoginRoute
-import plat.rickandmorty.app.profile.ui.ProfileRoute
+import plat.rickandmorty.app.character.navigation.CharactersDestination
+import plat.rickandmorty.app.character.navigation.CharactersGraph
+import plat.rickandmorty.app.character.navigation.charactersGraph
+import plat.rickandmorty.app.character.navigation.navigateToCharactersGraph
+import plat.rickandmorty.app.location.navigation.LocationsGraph
+import plat.rickandmorty.app.location.navigation.locationsGraph
+import plat.rickandmorty.app.login.navigation.LoginDestination
+import plat.rickandmorty.app.login.navigation.loginScreen
+import plat.rickandmorty.app.login.navigation.navigateToLoginDestination
+import plat.rickandmorty.app.profile.navigation.ProfileDestination
+import plat.rickandmorty.app.profile.navigation.profileScreen
 
-//Routes for main app
-@Serializable data object LoginDestination
-@Serializable data object ProfileDestination
+interface TopLevelRoute
 
-//Route for nested graphs
-@Serializable data object CharactersNavigationDestination
-@Serializable data object LocationsNavigationDestination
-
-//Routes inside nested graph of CharactersNavigationDestination
-@Serializable data object CharactersDestination
-@Serializable data class CharacterInfoDestination(
-    val id: Int
-)
-
-//Routes inside nested graph of LocationsNavigationDestination
-@Serializable data object LocationsDestination
-@Serializable data class LocationInfoDestination(
-    val id: Int
-)
-
-//TODO: change destinations to a directory called 'navigation' inside their respective screen
-enum class MainDestination(
-    val route: Any,
-    val label: String,
-    val icon: Int,
-    val contentDescription: String? = null
+enum class TopLevelDestination(
+    val route: TopLevelRoute,
+    @DrawableRes val icon: Int,
+    @StringRes val label: Int
 ) {
-    CHARACTERS(CharactersDestination, "Characters", R.drawable.users),
-    LOCATIONS(LocationsDestination, "Locations", R.drawable.world),
-    PROFILE(ProfileDestination, "Profile", R.drawable.user)
+    CHARACTERS(
+        route = CharactersGraph,
+        icon = R.drawable.users,
+        label = R.string.characters_title),
+
+    LOCATIONS(
+        route = LocationsGraph,
+        icon = R.drawable.world,
+        label = R.string.locations_title),
+
+    PROFILE(
+        route = ProfileDestination,
+        icon = R.drawable.user,
+        label = R.string.profile_title)
 }
 
 @Composable
-fun AppNavHost(
-    controller: NavHostController,
-    modifier: Modifier = Modifier,
-    startDestination: Any = LoginDestination
-){
-    NavHost(
-        navController = controller,
-        startDestination = startDestination,
-        modifier = modifier
-    ) {
-        composable<LoginDestination> {
-            LoginRoute(
-                onLoginClick = {
-                    controller.navigate(
-                        route = CharactersNavigationDestination
-                    ) {
-                        popUpTo<LoginDestination> {
-                            inclusive = true
-                        }
+fun AppNavHost(modifier: Modifier = Modifier) {
+    val navController = rememberNavController()
+    val backStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = backStackEntry?.destination
+
+    val selectedDestination = TopLevelDestination.entries.firstOrNull() { destination ->
+        currentDestination?.hierarchy?.any { it.hasRoute(destination.route::class) } == true
+    }
+
+    Scaffold(
+        modifier = modifier,
+        contentWindowInsets = WindowInsets(0),
+        bottomBar = {
+            if (selectedDestination != null) {
+                AppBottomBar(
+                    selectedDestination = selectedDestination,
+                    onDestinationClick = { destination ->
+                        navController.navigate(
+                            destination.route,
+                            navOptions {
+                                popUpTo(CharactersDestination) { saveState = true }
+
+                                //TODO: change this later
+                                launchSingleTop = false
+                                restoreState = false
+                            }
+                        )
                     }
+                )
+            }
+        }
+    ) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = LoginDestination,
+            modifier = Modifier
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
+        ) {
+            loginScreen(
+                onLoginClick = {
+                    navController.navigateToCharactersGraph(
+                        navOptions { popUpTo(LoginDestination) { inclusive = true } }
+                    )
+                }
+            )
+
+            charactersGraph(navController = navController)
+            locationsGraph(navController = navController)
+
+            profileScreen(
+                onSessionCloseClick = {
+                    navController.navigateToLoginDestination(
+                        navOptions { popUpTo(navController.graph.id) { inclusive = true } }
+                    )
                 }
             )
         }
+    }
+}
 
-        navigation<CharactersNavigationDestination>(startDestination = CharactersDestination){
-            composable<CharactersDestination> {
-                CharactersRoute(
-                    onCharacterClick = { id: Int ->
-                        controller.navigate(
-                            route = CharacterInfoDestination(id = id)
-                        )
-                    }
+@Composable
+fun AppBottomBar(
+    selectedDestination: TopLevelDestination,
+    onDestinationClick: (TopLevelDestination) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    NavigationBar(
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.onPrimary
+    ) {
+        TopLevelDestination.entries.forEach { destination ->
+            val selected = destination == selectedDestination
+            NavigationBarItem(
+                selected = selected,
+                onClick = { onDestinationClick(destination) },
+                icon = { Icon(painterResource(destination.icon), contentDescription = null) },
+                label = { Text(stringResource(destination.label)) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedIconColor = MaterialTheme.colorScheme.onPrimary,
+                    unselectedTextColor = MaterialTheme.colorScheme.onPrimary
                 )
-            }
-
-            composable<CharacterInfoDestination> { backStackEntry ->
-                val destination = backStackEntry.toRoute<CharacterInfoDestination>()
-
-                CharacterInfoRoute(
-                    characterId = destination.id,
-                    onBackClick = {
-                        controller.popBackStack()
-                    }
-                )
-            }
-        }
-
-        navigation<LocationsNavigationDestination>(startDestination = LocationsDestination){
-            composable<LocationsDestination> {
-                LocationsRoute(
-                    onLocationClick = { id ->
-                        controller.navigate(
-                            route = LocationInfoDestination(id = id)
-                        )
-                    }
-                )
-            }
-
-            composable<LocationInfoDestination> { backStackEntry ->
-                val destination = backStackEntry.toRoute<LocationInfoDestination>()
-
-                LocationInfoRoute(
-                    locationId = destination.id,
-                    onBackClick = {
-                        controller.popBackStack()
-                    }
-                )
-            }
-        }
-
-        composable<ProfileDestination> {
-            ProfileRoute(
-                profileId = 0,
-                onSessionCloseClick = {
-                    controller.navigate(
-                        route = LoginDestination
-                    ) {
-                        popUpTo(0)
-                    }
-                }
             )
         }
     }
