@@ -19,7 +19,6 @@ fun NavGraphBuilder.profileScreen(
 ) {
     composable<ProfileDestination> {
         ProfileRoute(
-            profileId = 0,
             onSessionCloseClick = onSessionCloseClick
         )
     }

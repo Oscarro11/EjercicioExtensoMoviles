@@ -14,24 +14,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.core.components.IconWithBackground
 import plat.rickandmorty.app.core.components.InfoRow
+import plat.rickandmorty.app.profile.data.ProfileViewModel
 
 @Composable
 fun ProfileRoute(
-    profileId: Int,
+    onSessionCloseClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onSessionCloseClick: () -> Unit = {}
+    viewModel: ProfileViewModel = viewModel()
 ){
-    //Retrieval of profile data by id
-
     ProfileScreen(
         iconId = R.drawable.user,
-        name = "Oscar Rodrigo Melchor Estrada",
+        name = viewModel.getUsername(),
         license = "25216",
         modifier = modifier,
-        onSessionCloseClick = onSessionCloseClick
+        onSessionCloseClick = { viewModel.logout(onDone = onSessionCloseClick) }
     )
 }
 

@@ -35,6 +35,8 @@ import plat.rickandmorty.app.login.navigation.loginScreen
 import plat.rickandmorty.app.login.navigation.navigateToLoginDestination
 import plat.rickandmorty.app.profile.navigation.ProfileDestination
 import plat.rickandmorty.app.profile.navigation.profileScreen
+import plat.rickandmorty.app.splash.ui.SplashDestination
+import plat.rickandmorty.app.splash.ui.splashScreen
 
 interface TopLevelRoute
 
@@ -81,10 +83,8 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                             destination.route,
                             navOptions {
                                 popUpTo(CharactersDestination) { saveState = true }
-
-                                //TODO: change this later
-                                launchSingleTop = false
-                                restoreState = false
+                                launchSingleTop = true
+                                restoreState = true
                             }
                         )
                     }
@@ -94,11 +94,24 @@ fun AppNavHost(modifier: Modifier = Modifier) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = LoginDestination,
+            startDestination = SplashDestination,
             modifier = Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
         ) {
+            splashScreen(
+                onLoggedIn = {
+                    navController.navigateToCharactersGraph(
+                        navOptions { popUpTo(SplashDestination) { inclusive = true } }
+                    )
+                },
+                onNotLoggedIn = {
+                    navController.navigateToLoginDestination(
+                        navOptions { popUpTo(SplashDestination) { inclusive = true } }
+                    )
+                }
+            )
+
             loginScreen(
                 onLoginClick = {
                     navController.navigateToCharactersGraph(
