@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import plat.rickandmorty.app.core.navigation.TopLevelRoute
 import plat.rickandmorty.app.location.ui.detail.LocationInfoRoute
@@ -43,11 +42,8 @@ private fun NavGraphBuilder.locationsScreen(onLocationClick: (Int) -> Unit) {
 }
 
 private fun NavGraphBuilder.locationInfoScreen(onBackClick: () -> Unit) {
-    composable<LocationInfoDestination> { backStackEntry ->
-        val destination = backStackEntry.toRoute<LocationInfoDestination>()
-
+    composable<LocationInfoDestination> {
         LocationInfoRoute(
-            locationId = destination.id,
             onBackClick = onBackClick
         )
     }

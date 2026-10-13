@@ -33,12 +33,10 @@ import plat.rickandmorty.app.location.data.detail.LocationInfoViewModel
 
 @Composable
 fun LocationInfoRoute(
-    locationId: Int,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: LocationInfoViewModel = viewModel()
 ){
-    val viewModel = viewModel{ LocationInfoViewModel(locationId) }
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     LocationInfoScreen(

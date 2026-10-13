@@ -43,11 +43,8 @@ private fun NavGraphBuilder.charactersScreen(onCharacterClick: (Int) -> Unit) {
 }
 
 private fun NavGraphBuilder.characterInfoScreen(onBackClick: () -> Unit){
-    composable<CharacterInfoDestination> { backStackEntry ->
-        val destination = backStackEntry.toRoute<CharacterInfoDestination>()
-
+    composable<CharacterInfoDestination> {
         CharacterInfoRoute(
-            characterId = destination.id,
             onBackClick = onBackClick
         )
     }

@@ -34,12 +34,10 @@ import plat.rickandmorty.app.core.data.Event
 
 @Composable
 fun CharacterInfoRoute(
-    characterId: Int,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CharacterInfoViewModel = viewModel()
 ){
-    val viewModel: CharacterInfoViewModel = viewModel { CharacterInfoViewModel(characterId) }
-
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     CharacterInfoScreen(
