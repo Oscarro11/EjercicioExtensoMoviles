@@ -10,14 +10,17 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.core.components.IconWithBackground
 import plat.rickandmorty.app.core.components.InfoRow
+import plat.rickandmorty.app.profile.data.ProfileState
 import plat.rickandmorty.app.profile.data.ProfileViewModel
 
 @Composable
@@ -26,10 +29,11 @@ fun ProfileRoute(
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = viewModel()
 ){
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     ProfileScreen(
         iconId = R.drawable.user,
-        name = viewModel.getUsername(),
-        license = "25216",
+        state = state,
         modifier = modifier,
         onSessionCloseClick = { viewModel.logout(onDone = onSessionCloseClick) }
     )
@@ -38,8 +42,7 @@ fun ProfileRoute(
 @Composable
 private fun ProfileScreen(
     @DrawableRes iconId: Int,
-    name: String,
-    license: String,
+    state: ProfileState,
     modifier: Modifier = Modifier,
     onSessionCloseClick: () -> Unit = {}
 ){
@@ -62,13 +65,13 @@ private fun ProfileScreen(
 
         InfoRow(
             label = "Nombre",
-            data = name,
+            data = state.name,
             modifier = Modifier.padding(vertical = 6.dp)
         )
 
         InfoRow(
             label = "Carné",
-            data = license,
+            data = state.license,
             modifier = Modifier.padding(vertical = 6.dp)
         )
 
@@ -90,7 +93,8 @@ private fun ProfileScreen(
 fun PreviewProfileScreen(){
     ProfileScreen(
         iconId = R.drawable.user,
-        name = "Oscar Rodrigo Melchor Estrada",
-        license = "25216"
+        state = ProfileState(
+            name = "Oscar"
+        )
     )
 }

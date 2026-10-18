@@ -29,6 +29,7 @@ fun NavGraphBuilder.splashScreen(
     }
 }
 
+//TODO: remove custom splash Screen, use androids own splash
 @Composable
 fun SplashRoute(
     onLoggedIn: () -> Unit,
@@ -40,9 +41,12 @@ fun SplashRoute(
         if (viewModel.isLogged()) onLoggedIn() else onNotLoggedIn()
     }
 
-    SplashScreen( modifier = modifier)
+    SplashScreen(
+        modifier = modifier
+    )
 }
 
+//fun
 @Composable
 private fun SplashScreen( modifier: Modifier = Modifier ){
     Column(

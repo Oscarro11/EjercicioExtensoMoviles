@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -65,18 +66,24 @@ private fun LoginScreen(
             OutlinedTextField(
                 value = state.name,
                 onValueChange = { value -> onEvent( LoginEvent.ChangeName(value) ) },
+                enabled = !state.isLoading,
                 placeholder = { Text("Nombre") },
                 modifier = Modifier.padding(12.dp)
             )
 
-            Button(
-                onClick = onLoginClick,
-                modifier = Modifier
-                    .fillMaxWidth(0.8f)
-            ) {
-                Text(
-                    text = "Entrar"
-                )
+            if (!state.isLoading) {
+                Button(
+                    onClick = onLoginClick,
+                    modifier = Modifier
+                        .fillMaxWidth(0.8f)
+                ) {
+                    Text(
+                        text = "Entrar"
+                    )
+                }
+            }
+            else {
+                CircularProgressIndicator()
             }
         }
 

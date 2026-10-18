@@ -82,7 +82,7 @@ fun AppNavHost(modifier: Modifier = Modifier) {
                         navController.navigate(
                             destination.route,
                             navOptions {
-                                popUpTo(CharactersDestination) { saveState = true }
+                                popUpTo(CharactersGraph) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
