@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,15 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import plat.rickandmorty.app.chores.ui.AppStateContent
+import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
-import plat.rickandmorty.app.core.data.Event
 import plat.rickandmorty.app.location.data.Location
-import plat.rickandmorty.app.location.data.LocationDb
 import plat.rickandmorty.app.location.data.list.LocationsViewModel
 
 @Composable
@@ -46,14 +43,14 @@ fun LocationsRoute(
 private fun LocationsScreen(
     state: AppState<List<Location>>,
     onLocationClick: (Int) -> Unit,
-    onViewModelChange: (Event) -> Unit,
+    onViewModelChange: (AppEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
     AppStateContent(
         state = state,
         errorMessage = "Error al cargar la lista de localizaciones. Inténtelo de nuevo",
-        onLoadingClick = { onViewModelChange(Event.ClickLoading) },
-        onRetryClick = { onViewModelChange(Event.ClickRetry) },
+        onLoadingClick = { onViewModelChange(AppEvent.ClickLoading) },
+        onRetryClick = { onViewModelChange(AppEvent.ClickRetry) },
         modifier = modifier
     ) { locations ->
         LocationsContent(
@@ -112,14 +109,4 @@ private fun LocationRow(
             style = MaterialTheme.typography.bodySmall
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun PreviewLocationsContent(){
-    LocationsContent(
-        locations = LocationDb.getAllLocations(),
-        onLocationClick = {},
-        modifier = Modifier.fillMaxSize()
-    )
 }

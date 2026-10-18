@@ -6,3 +6,9 @@ data class Location(
     val type: String,
     val dimension: String
 )
+
+fun Location.mapToEntity(): LocationEntity {
+    return LocationEntity(
+        id, name, type, dimension
+    )
+}

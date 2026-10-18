@@ -4,17 +4,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
 
-sealed interface Event{
-    data object ClickLoading: Event
-    data object ClickRetry: Event
+sealed interface AppEvent{
+    data object ClickLoading: AppEvent
+    data object ClickRetry: AppEvent
 }
 
-abstract class BaseViewModel<T>(
+abstract class BaseViewModel<T, E>(
     val loadingTime: Duration
 ) : ViewModel() {
     private val _state = MutableStateFlow(AppState<T>())
@@ -22,16 +25,26 @@ abstract class BaseViewModel<T>(
 
     private var loadingJob: Job? = null
 
-    fun onChange(event: Event){
+    fun onChange(event: AppEvent){
         when (event){
-            Event.ClickLoading -> {
+            AppEvent.ClickLoading -> {
                 triggerError()
             }
 
-            Event.ClickRetry -> {
+            AppEvent.ClickRetry -> {
                 triggerLoading()
             }
         }
+    }
+
+    fun onEvent(event: E) = handleEvent(event)
+
+    protected abstract fun handleEvent(event: E)
+
+    protected fun updateState(data: T) {
+        _state.update { it.copy(
+            data = data
+        ) }
     }
 
     protected fun triggerLoading() {
@@ -46,11 +59,25 @@ abstract class BaseViewModel<T>(
 
             delay(loadingTime)
 
-            _state.value = _state.value.copy(
-                isLoading = false,
-                data = loadData(),
-                hasError = false
-            )
+            loadData()
+                .catch {
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            data = null,
+                            hasError = true
+                        )
+                    }
+                }
+                .collect { data ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            data = data,
+                            hasError = false
+                        )
+                    }
+                }
         }
     }
 
@@ -67,5 +94,5 @@ abstract class BaseViewModel<T>(
         }
     }
 
-    protected abstract suspend fun loadData(): T
+    protected abstract fun loadData(): Flow<T>
 }

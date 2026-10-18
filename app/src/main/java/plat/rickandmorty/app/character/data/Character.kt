@@ -6,5 +6,12 @@ data class Character(
     val status: String,
     val species: String,
     val gender: String,
-    val image: String
+    val image: String,
+    val favorite: Boolean
 )
+
+fun Character.mapToEntity(): CharacterEntity {
+    return CharacterEntity(
+        id, name, status, species, gender, image, favorite
+    )
+}

@@ -14,6 +14,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -23,17 +26,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.Character
+import plat.rickandmorty.app.character.data.list.CharactersEvent
+import plat.rickandmorty.app.character.data.list.CharactersFilter
 import plat.rickandmorty.app.character.data.list.CharactersViewModel
 import plat.rickandmorty.app.chores.ui.AppStateContent
+import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
-import plat.rickandmorty.app.core.data.Event
 
 @Composable
 fun CharactersRoute(
@@ -41,12 +49,15 @@ fun CharactersRoute(
     modifier: Modifier = Modifier,
     viewModel: CharactersViewModel = viewModel()
 ){
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.filteredState.collectAsStateWithLifecycle()
+    val filter by viewModel.filter.collectAsStateWithLifecycle()
 
     CharactersScreen(
         state = state,
+        filter = filter,
         onCharacterClick = onCharacterClick,
         onViewModelChange = viewModel::onChange,
+        onEvent = viewModel::onEvent,
         modifier = modifier
     )
 }
@@ -54,20 +65,24 @@ fun CharactersRoute(
 @Composable
 private fun CharactersScreen(
     state: AppState<List<Character>>,
+    filter: CharactersFilter,
     onCharacterClick: (Int) -> Unit,
-    onViewModelChange: (Event) -> Unit,
+    onViewModelChange: (AppEvent) -> Unit,
+    onEvent: (CharactersEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
     AppStateContent(
         state = state,
         errorMessage = "Error al cargar la lista de personajes. Inténtelo de nuevo",
-        onLoadingClick = { onViewModelChange(Event.ClickLoading) },
-        onRetryClick = { onViewModelChange(Event.ClickRetry) },
+        onLoadingClick = { onViewModelChange(AppEvent.ClickLoading) },
+        onRetryClick = { onViewModelChange(AppEvent.ClickRetry) },
         modifier = modifier
     ) { characters ->
         CharactersContent(
             characters = characters,
             onCharacterClick = onCharacterClick,
+            filter = filter,
+            onEvent = onEvent,
             modifier = modifier
         )
     }
@@ -77,7 +92,9 @@ private fun CharactersScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun CharactersContent(
     characters: List<Character>,
+    filter: CharactersFilter,
     onCharacterClick: (Int) -> Unit,
+    onEvent: (CharactersEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
@@ -95,35 +112,50 @@ private fun CharactersContent(
             )
         )
 
+        FilterChip(
+            selected = filter.onlyFavorites,
+            onClick = { onEvent(CharactersEvent.FilterFavorites) },
+            label = { Text("Favoritos") }
+        )
+
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            items(characters) { character ->
-                CharacterCard(
-                    image = character.image,
-                    name = character.name,
-                    species = character.species,
-                    status = character.status,
-                    modifier = modifier
-                        .height(100.dp)
-                        .clickable(
-                            enabled = true,
-                            onClick = {
-                                onCharacterClick(character.id)
-                            }
-                        )
-                )
+            if (characters.isEmpty() && filter.onlyFavorites) {
+                item {
+                    Text(
+                        text = "No has seleccionado ninguno personaje favorito",
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
             }
+            else {
+                items(characters) { character ->
+                    CharacterCard(
+                        character = character,
+                        onFavorite = { onEvent(CharactersEvent.ToggleFavorite(character.id)) },
+                        modifier = modifier
+                            .height(100.dp)
+                            .clickable(
+                                enabled = true,
+                                onClick = {
+                                    onCharacterClick(character.id)
+                                }
+                            )
+                    )
+                }
+            }
+
         }
     }
 }
 
 @Composable
 private fun CharacterCard(
-    image: String,
-    name: String,
-    species: String,
-    status: String,
+    character: Character,
+    onFavorite: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Row(
@@ -138,7 +170,7 @@ private fun CharacterCard(
                 .weight(0.2f)
         ) {
             AsyncImage(
-                model = image,
+                model = character.image,
                 contentDescription = null,
                 modifier = Modifier
                     .clip(CircleShape)
@@ -153,10 +185,10 @@ private fun CharacterCard(
                 .padding(5.dp)
         ) {
             Text(
-                text = name,
+                text = character.name,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = 5.em
+                fontSize = if (character.name.length > 20) 4.em else 5.em
             )
 
             Spacer(
@@ -164,8 +196,17 @@ private fun CharacterCard(
             )
 
             Text(
-                text = "$species - $status",
+                text = "${character.species} - ${character.status}",
                 style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        IconButton(
+            onClick = onFavorite
+        ) {
+            Icon(
+                painter = painterResource(if (character.favorite) R.drawable.favorite_full else R.drawable.favorite_empty),
+                contentDescription = null
             )
         }
     }

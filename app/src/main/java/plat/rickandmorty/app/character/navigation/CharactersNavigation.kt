@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import androidx.navigation.toRoute
 import kotlinx.serialization.Serializable
 import plat.rickandmorty.app.character.ui.detail.CharacterInfoRoute
 import plat.rickandmorty.app.character.ui.list.CharactersRoute

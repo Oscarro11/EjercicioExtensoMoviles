@@ -24,7 +24,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import plat.rickandmorty.app.R
-import plat.rickandmorty.app.character.navigation.CharactersDestination
 import plat.rickandmorty.app.character.navigation.CharactersGraph
 import plat.rickandmorty.app.character.navigation.charactersGraph
 import plat.rickandmorty.app.character.navigation.navigateToCharactersGraph

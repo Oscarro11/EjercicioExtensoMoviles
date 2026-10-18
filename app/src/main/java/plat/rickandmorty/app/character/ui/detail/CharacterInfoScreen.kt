@@ -2,6 +2,7 @@ package plat.rickandmorty.app.character.ui.detail
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -26,11 +27,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.Character
+import plat.rickandmorty.app.character.data.detail.CharacterInfoEvent
 import plat.rickandmorty.app.character.data.detail.CharacterInfoViewModel
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.components.InfoRow
+import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
-import plat.rickandmorty.app.core.data.Event
 
 @Composable
 fun CharacterInfoRoute(
@@ -43,6 +45,7 @@ fun CharacterInfoRoute(
     CharacterInfoScreen(
         state = state,
         onViewModelChange = viewModel::onChange,
+        onEvent = viewModel::onEvent,
         onBackClick = onBackClick,
         modifier = modifier
     )
@@ -51,20 +54,22 @@ fun CharacterInfoRoute(
 @Composable
 private fun CharacterInfoScreen(
     state: AppState<Character>,
-    onViewModelChange: (Event) -> Unit,
+    onViewModelChange: (AppEvent) -> Unit,
+    onEvent: (CharacterInfoEvent) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
     AppStateContent(
         state = state,
         errorMessage = "Error al cargar información del personaje, Inténtelo de nuevo",
-        onLoadingClick = { onViewModelChange(Event.ClickLoading) },
-        onRetryClick = { onViewModelChange(Event.ClickRetry) },
+        onLoadingClick = { onViewModelChange(AppEvent.ClickLoading) },
+        onRetryClick = { onViewModelChange(AppEvent.ClickRetry) },
         modifier = modifier
     ) { character ->
         CharacterInfoContent(
             character = character,
             onBackClick = onBackClick,
+            onEvent = onEvent,
             modifier = modifier
         )
     }
@@ -75,6 +80,7 @@ private fun CharacterInfoScreen(
 private fun CharacterInfoContent(
     character: Character,
     onBackClick: () -> Unit,
+    onEvent: (CharacterInfoEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
     Column(
@@ -109,14 +115,28 @@ private fun CharacterInfoContent(
                 .clip(CircleShape)
         )
 
-        Text(
-            text = character.name,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.ExtraBold,
-            fontSize = 5.em,
-            modifier = Modifier
-                .padding(10.dp)
-        )
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = character.name,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 5.em,
+                modifier = Modifier
+                    .padding(10.dp)
+            )
+
+            IconButton(
+                onClick = { onEvent(CharacterInfoEvent.ToggleFavorite(character.id)) }
+            ) {
+                Icon(
+                    painter = painterResource(if (!character.favorite) R.drawable.favorite_empty else R.drawable.favorite_full),
+                    contentDescription = null
+                )
+            }
+        }
 
         Column(
             verticalArrangement = Arrangement.spacedBy(10.dp),
