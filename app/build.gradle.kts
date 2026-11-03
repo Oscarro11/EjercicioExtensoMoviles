@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.jetbrains.kotlin.serialization)
+    alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
 }
 
@@ -57,7 +58,13 @@ dependencies {
     implementation(libs.coil.network.okhttp)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.bundles.ktor)
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
+
     ksp(libs.room.compiler)
+    ksp(libs.hilt.compiler)
+
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
