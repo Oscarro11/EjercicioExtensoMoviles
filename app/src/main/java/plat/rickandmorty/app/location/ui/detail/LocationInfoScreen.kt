@@ -19,21 +19,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.components.InfoRow
 import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
-import plat.rickandmorty.app.location.data.Location
-import plat.rickandmorty.app.location.data.detail.LocationInfoViewModel
+import plat.rickandmorty.app.location.data.domain.Location
 
 @Composable
 fun LocationInfoRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: LocationInfoViewModel = viewModel()
+    viewModel: LocationInfoViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 

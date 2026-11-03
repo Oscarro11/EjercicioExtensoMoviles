@@ -1,4 +1,4 @@
-package plat.rickandmorty.app.location.data
+package plat.rickandmorty.app.location.data.local
 
 import androidx.room.Dao
 import androidx.room.Delete

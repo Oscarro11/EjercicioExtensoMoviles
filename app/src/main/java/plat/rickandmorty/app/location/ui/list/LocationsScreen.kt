@@ -15,19 +15,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
-import plat.rickandmorty.app.location.data.Location
-import plat.rickandmorty.app.location.data.list.LocationsViewModel
+import plat.rickandmorty.app.location.data.domain.Location
 
 @Composable
 fun LocationsRoute(
     onLocationClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: LocationsViewModel = viewModel()
+    viewModel: LocationsViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 

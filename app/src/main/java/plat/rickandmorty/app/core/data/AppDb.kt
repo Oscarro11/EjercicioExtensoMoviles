@@ -4,8 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import plat.rickandmorty.app.character.data.CharacterDAO
 import plat.rickandmorty.app.character.data.CharacterEntity
-import plat.rickandmorty.app.location.data.LocationDAO
-import plat.rickandmorty.app.location.data.LocationEntity
+import plat.rickandmorty.app.location.data.local.LocationDAO
+import plat.rickandmorty.app.location.data.local.LocationEntity
 
 @Database(
     entities = [

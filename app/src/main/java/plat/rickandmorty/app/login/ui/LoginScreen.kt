@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.login.data.LoginEvent
 import plat.rickandmorty.app.login.data.LoginState
@@ -27,7 +27,7 @@ import plat.rickandmorty.app.login.data.LoginViewModel
 fun LoginRoute(
     onLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 
