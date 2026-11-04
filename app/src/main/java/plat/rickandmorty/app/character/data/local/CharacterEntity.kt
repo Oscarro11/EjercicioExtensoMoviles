@@ -1,7 +1,8 @@
-package plat.rickandmorty.app.character.data
+package plat.rickandmorty.app.character.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import plat.rickandmorty.app.character.data.domain.Character
 
 @Entity(tableName = "characters")
 data class CharacterEntity (

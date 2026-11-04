@@ -9,9 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import plat.rickandmorty.app.character.data.CharacterDb
-import plat.rickandmorty.app.character.data.mapToEntity
-import plat.rickandmorty.app.core.Dependencies
+import plat.rickandmorty.app.character.data.CharacterRepository
 import plat.rickandmorty.app.core.data.PreferencesDataStore
 import plat.rickandmorty.app.location.data.LocationRepository
 import javax.inject.Inject
@@ -25,8 +23,7 @@ sealed interface LoginEvent {
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val app: Application,
-    private val locationRepository: LocationRepository
+    private val app: Application
 ) : AndroidViewModel(app) {
     private val dataStore = PreferencesDataStore(app.applicationContext)
     private val _state = MutableStateFlow(LoginState())
@@ -58,16 +55,6 @@ class LoginViewModel @Inject constructor(
                 it.copy(
                     isLoading = true
                 )
-            }
-
-            if (dataStore.getUsername() == "") {
-                Dependencies.database.characterDAO().insertCharacter(
-                    *CharacterDb.getAllCharacters().map {
-                            character -> character.mapToEntity()
-                    }.toTypedArray()
-                )
-
-                locationRepository.checkLoadLocations()
             }
 
             dataStore.setUsername(username = _state.value.name)

@@ -31,14 +31,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import plat.rickandmorty.app.R
-import plat.rickandmorty.app.character.data.Character
-import plat.rickandmorty.app.character.data.list.CharactersEvent
-import plat.rickandmorty.app.character.data.list.CharactersFilter
-import plat.rickandmorty.app.character.data.list.CharactersViewModel
+import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
@@ -47,7 +44,7 @@ import plat.rickandmorty.app.core.data.AppState
 fun CharactersRoute(
     onCharacterClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CharactersViewModel = viewModel()
+    viewModel: CharactersViewModel = hiltViewModel()
 ){
     val state by viewModel.filteredState.collectAsStateWithLifecycle()
     val filter by viewModel.filter.collectAsStateWithLifecycle()

@@ -22,13 +22,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import plat.rickandmorty.app.R
-import plat.rickandmorty.app.character.data.Character
-import plat.rickandmorty.app.character.data.detail.CharacterInfoEvent
-import plat.rickandmorty.app.character.data.detail.CharacterInfoViewModel
+import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.components.InfoRow
 import plat.rickandmorty.app.core.data.AppEvent
@@ -38,7 +36,7 @@ import plat.rickandmorty.app.core.data.AppState
 fun CharacterInfoRoute(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CharacterInfoViewModel = viewModel()
+    viewModel: CharacterInfoViewModel = hiltViewModel()
 ){
     val state by viewModel.state.collectAsStateWithLifecycle()
 

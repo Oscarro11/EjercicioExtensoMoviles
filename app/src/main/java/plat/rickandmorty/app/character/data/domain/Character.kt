@@ -1,4 +1,6 @@
-package plat.rickandmorty.app.character.data
+package plat.rickandmorty.app.character.data.domain
+
+import plat.rickandmorty.app.character.data.local.CharacterEntity
 
 data class Character(
     val id: Int,

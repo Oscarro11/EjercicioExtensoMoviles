@@ -1,21 +1,22 @@
-package plat.rickandmorty.app.character.data.list
+package plat.rickandmorty.app.character.ui.list
 
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import plat.rickandmorty.app.character.data.Character
-import plat.rickandmorty.app.character.data.mapToModel
-import plat.rickandmorty.app.core.Dependencies
+import plat.rickandmorty.app.character.data.CharacterRepository
+import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.core.data.AppState
 import plat.rickandmorty.app.core.data.BaseViewModel
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 data class CharactersFilter(
@@ -29,7 +30,10 @@ sealed interface CharactersEvent{
     ): CharactersEvent
 }
 
-class CharactersViewModel : BaseViewModel<List<Character>, CharactersEvent>(
+@HiltViewModel
+class CharactersViewModel @Inject constructor(
+    private val characterRepository: CharacterRepository
+) : BaseViewModel<List<Character>, CharactersEvent>(
     loadingTime = 4.seconds
 ) {
     private val _filter = MutableStateFlow(CharactersFilter())
@@ -61,7 +65,7 @@ class CharactersViewModel : BaseViewModel<List<Character>, CharactersEvent>(
 
     private fun toggleFavorite(id: Int) {
         viewModelScope.launch {
-            Dependencies.database.characterDAO().toggleCharacterFavorite(id)
+            characterRepository.toggleCharacterFavorite(id)
         }
     }
 
@@ -69,8 +73,15 @@ class CharactersViewModel : BaseViewModel<List<Character>, CharactersEvent>(
         _filter.update { it.copy(onlyFavorites = !it.onlyFavorites) }
     }
 
-    override fun loadData(): Flow<List<Character>> =
-        Dependencies.database.characterDAO()
-            .getCharacters()
-            .map { entities -> entities.map { it.mapToModel() } }
+    override fun loadData(): Flow<List<Character>> {
+        val characters = characterRepository.getCharacters()
+
+        viewModelScope.launch {
+            if (characters.first().isEmpty()) {
+                triggerError()
+            }
+        }
+
+        return characters
+    }
 }

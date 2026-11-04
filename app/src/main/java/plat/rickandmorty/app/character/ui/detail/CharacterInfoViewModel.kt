@@ -1,16 +1,16 @@
-package plat.rickandmorty.app.character.data.detail
+package plat.rickandmorty.app.character.ui.detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import plat.rickandmorty.app.character.data.Character
-import plat.rickandmorty.app.character.data.mapToModel
+import plat.rickandmorty.app.character.data.CharacterRepository
+import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.character.navigation.CharacterInfoDestination
-import plat.rickandmorty.app.core.Dependencies
 import plat.rickandmorty.app.core.data.BaseViewModel
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 sealed interface CharacterInfoEvent{
@@ -19,8 +19,10 @@ sealed interface CharacterInfoEvent{
     ): CharacterInfoEvent
 }
 
-class CharacterInfoViewModel(
-    private val savedStateHandle: SavedStateHandle
+@HiltViewModel
+class CharacterInfoViewModel @Inject constructor(
+    val savedStateHandle: SavedStateHandle,
+    private val repository: CharacterRepository
 ) : BaseViewModel<Character, CharacterInfoEvent>(
     loadingTime = 2.seconds
 ) {
@@ -38,12 +40,10 @@ class CharacterInfoViewModel(
 
     private fun toggleFavorite(id: Int){
         viewModelScope.launch {
-            Dependencies.database.characterDAO()
-                .toggleCharacterFavorite(id)
+            repository.toggleCharacterFavorite(id)
         }
     }
 
     override fun loadData(): Flow<Character> =
-        Dependencies.database.characterDAO()
-            .getCharacterById(destination.id).map { characterEntity -> characterEntity.mapToModel() }
+        repository.getCharacter(destination.id)
 }

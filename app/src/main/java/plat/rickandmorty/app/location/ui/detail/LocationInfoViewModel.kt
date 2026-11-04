@@ -4,12 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.toRoute
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import plat.rickandmorty.app.core.Dependencies
 import plat.rickandmorty.app.core.data.BaseViewModel
 import plat.rickandmorty.app.location.data.LocationRepository
 import plat.rickandmorty.app.location.data.domain.Location
-import plat.rickandmorty.app.location.data.local.mapToModel
 import plat.rickandmorty.app.location.navigation.LocationInfoDestination
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
@@ -30,6 +27,5 @@ class LocationInfoViewModel @Inject constructor(
     override fun handleEvent(event: Nothing) {}
 
     override fun loadData(): Flow<Location> =
-        Dependencies.database.locationDAO()
-            .getLocationById(destination.id).map { locationEntity -> locationEntity.mapToModel() }
+        repository.getLocation(destination.id)
 }
