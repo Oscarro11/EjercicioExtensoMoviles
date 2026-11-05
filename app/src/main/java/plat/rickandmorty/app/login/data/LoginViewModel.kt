@@ -23,7 +23,9 @@ sealed interface LoginEvent {
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val app: Application
+    private val app: Application,
+    private val characterRepository: CharacterRepository,
+    private val locationRepository: LocationRepository
 ) : AndroidViewModel(app) {
     private val dataStore = PreferencesDataStore(app.applicationContext)
     private val _state = MutableStateFlow(LoginState())
@@ -55,6 +57,11 @@ class LoginViewModel @Inject constructor(
                 it.copy(
                     isLoading = true
                 )
+            }
+
+            if (dataStore.getUsername() == "") {
+               characterRepository.checkLoadCharacters()
+                locationRepository.checkLoadLocations()
             }
 
             dataStore.setUsername(username = _state.value.name)

@@ -2,6 +2,7 @@ package plat.rickandmorty.app.location.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import plat.rickandmorty.app.location.data.domain.Location
@@ -16,18 +17,23 @@ class LocationRepositoryImpl @Inject constructor (
     private val dao: LocationDAO
 ) : LocationRepository {
 
+    override suspend fun checkLoadLocations() {
+        val localLocations = dao.getLocations()
+
+        if (localLocations.first().isEmpty()) {
+            val remoteLocations = api.getLocations()
+
+            if (remoteLocations.isNotEmpty()) {
+                dao.insertLocation(
+                    *remoteLocations
+                        .map { it.mapToEntity() }
+                        .toTypedArray()
+                )
+            }
+        }
+    }
 
     override fun getLocations(): Flow<List<Location>> = flow {
-        val remoteLocations = api.getLocations()
-
-        if (remoteLocations.isNotEmpty()) {
-            dao.insertLocation(
-                *remoteLocations
-                    .map { it.mapToEntity() }
-                    .toTypedArray()
-            )
-        }
-
         emitAll(
             dao.getLocations().map { entities ->
                 entities.map { it.mapToModel() }
@@ -41,5 +47,9 @@ class LocationRepositoryImpl @Inject constructor (
                 entity.mapToModel()
             }
         )
+    }
+
+    override suspend fun deleteLocations() {
+        dao.deleteLocations()
     }
 }

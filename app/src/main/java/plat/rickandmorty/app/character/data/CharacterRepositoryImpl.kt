@@ -2,6 +2,7 @@ package plat.rickandmorty.app.character.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import plat.rickandmorty.app.character.data.domain.Character
@@ -16,17 +17,23 @@ class CharacterRepositoryImpl @Inject constructor (
     private val dao: CharacterDAO
 ) : CharacterRepository {
 
-    override fun getCharacters(): Flow<List<Character>> = flow {
-        val remoteCharacters = api.getCharacters()
+    override suspend fun checkLoadCharacters() {
+        val localCharacters = dao.getCharacters()
 
-        if (remoteCharacters.isNotEmpty()) {
-            dao.insertCharacter(
-                *remoteCharacters
-                    .map { it.mapToEntity() }
-                    .toTypedArray()
-            )
+        if (localCharacters.first().isEmpty()) {
+            val remoteCharacters = api.getCharacters()
+
+            if (remoteCharacters.isNotEmpty()) {
+                dao.insertCharacter(
+                    *remoteCharacters
+                        .map { it.mapToEntity() }
+                        .toTypedArray()
+                )
+            }
         }
+    }
 
+    override fun getCharacters(): Flow<List<Character>> = flow {
         emitAll(
             dao.getCharacters().map { entities ->
                 entities.map { it.mapToModel() }
@@ -44,5 +51,9 @@ class CharacterRepositoryImpl @Inject constructor (
 
     override suspend fun toggleCharacterFavorite(id: Int) {
         dao.toggleCharacterFavorite(id)
+    }
+
+    override suspend fun deleteCharacters() {
+        dao.deleteCharacters()
     }
 }
