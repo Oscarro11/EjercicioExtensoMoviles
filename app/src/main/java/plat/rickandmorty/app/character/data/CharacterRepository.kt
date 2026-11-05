@@ -9,4 +9,5 @@ interface CharacterRepository {
     fun getCharacter(id: Int): Flow<Character>
     suspend fun toggleCharacterFavorite(id: Int)
     suspend fun deleteCharacters()
+    suspend fun deleteCharacter(character: Character)
 }

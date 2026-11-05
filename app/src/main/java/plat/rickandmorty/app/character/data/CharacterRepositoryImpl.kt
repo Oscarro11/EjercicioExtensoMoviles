@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import plat.rickandmorty.app.character.data.domain.Character
+import plat.rickandmorty.app.character.data.domain.mapToEntity
 import plat.rickandmorty.app.character.data.local.CharacterDAO
 import plat.rickandmorty.app.character.data.local.mapToModel
 import plat.rickandmorty.app.character.data.remote.CharacterApi
@@ -55,5 +56,9 @@ class CharacterRepositoryImpl @Inject constructor (
 
     override suspend fun deleteCharacters() {
         dao.deleteCharacters()
+    }
+
+    override suspend fun deleteCharacter(character: Character) {
+        dao.deleteCharacter(character.mapToEntity())
     }
 }

@@ -28,6 +28,9 @@ sealed interface CharactersEvent{
     data class ToggleFavorite(
         val id: Int
     ): CharactersEvent
+    data class Delete(
+        val character: Character
+    ): CharactersEvent
 }
 
 @HiltViewModel
@@ -60,6 +63,7 @@ class CharactersViewModel @Inject constructor(
         when (event) {
             is CharactersEvent.ToggleFavorite -> toggleFavorite(event.id)
             is CharactersEvent.FilterFavorites -> filterFavorites()
+            is CharactersEvent.Delete -> deleteCharacter(event.character)
         }
     }
 
@@ -71,6 +75,12 @@ class CharactersViewModel @Inject constructor(
 
     private fun filterFavorites() {
         _filter.update { it.copy(onlyFavorites = !it.onlyFavorites) }
+    }
+
+    private fun deleteCharacter(character: Character) {
+        viewModelScope.launch {
+            characterRepository.deleteCharacter(character)
+        }
     }
 
     override fun loadData(): Flow<List<Character>> {

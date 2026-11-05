@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.em
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter.State.Empty.painter
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
@@ -133,6 +134,7 @@ private fun CharactersContent(
                     CharacterCard(
                         character = character,
                         onFavorite = { onEvent(CharactersEvent.ToggleFavorite(character.id)) },
+                        onDelete = { onEvent(CharactersEvent.Delete(character)) },
                         modifier = modifier
                             .height(100.dp)
                             .clickable(
@@ -153,6 +155,7 @@ private fun CharactersContent(
 private fun CharacterCard(
     character: Character,
     onFavorite: () -> Unit,
+    onDelete: () -> Unit,
     modifier: Modifier = Modifier
 ){
     Row(
@@ -203,6 +206,15 @@ private fun CharacterCard(
         ) {
             Icon(
                 painter = painterResource(if (character.favorite) R.drawable.favorite_full else R.drawable.favorite_empty),
+                contentDescription = null
+            )
+        }
+
+        IconButton(
+            onClick = onDelete
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.delete),
                 contentDescription = null
             )
         }
