@@ -49,6 +49,10 @@ class LocationRepositoryImpl @Inject constructor (
         )
     }
 
+    override suspend fun toggleLocationFavorite(id: Int) {
+        dao.toggleLocationFavorite(id)
+    }
+
     override suspend fun deleteLocations() {
         dao.deleteLocations()
     }

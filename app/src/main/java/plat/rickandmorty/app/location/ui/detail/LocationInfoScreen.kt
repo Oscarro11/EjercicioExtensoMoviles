@@ -3,6 +3,7 @@ package plat.rickandmorty.app.location.ui.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.plus
@@ -39,6 +40,7 @@ fun LocationInfoRoute(
     LocationInfoScreen(
         state = state,
         onViewModelChange = viewModel::onChange,
+        onEvent = viewModel::onEvent,
         onBackClick = onBackClick,
         modifier = modifier
     )
@@ -48,6 +50,7 @@ fun LocationInfoRoute(
 private fun LocationInfoScreen(
     state: AppState<Location>,
     onViewModelChange: (AppEvent) -> Unit,
+    onEvent: (LocationInfoEvent) -> Unit,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -61,6 +64,7 @@ private fun LocationInfoScreen(
         LocationInfoContent(
             location = location,
             onBackClick = onBackClick,
+            onEvent = onEvent,
             modifier = modifier
         )
     }
@@ -71,6 +75,7 @@ private fun LocationInfoScreen(
 private fun LocationInfoContent(
     location: Location,
     onBackClick: () -> Unit,
+    onEvent: (LocationInfoEvent) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -102,29 +107,50 @@ private fun LocationInfoContent(
                 .fillMaxSize()
                 .padding(contentPadding + PaddingValues(24.dp))
         ) {
-            Text(
-                text = location.name,
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(24.dp)
-            )
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = location.name,
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(24.dp)
+                )
 
-            InfoRow(
-                label = "ID",
-                data = location.id.toString(),
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
+                IconButton(
+                    onClick = { onEvent(LocationInfoEvent.ToggleFavorite(location.id)) }
+                ) {
+                    Icon(
+                        painter = painterResource(if (!location.favorite) R.drawable.favorite_empty else R.drawable.favorite_full),
+                        contentDescription = null
+                    )
+                }
+            }
 
-            InfoRow(
-                label = "Type",
-                data = location.type,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(30.dp)
+            ) {
+                InfoRow(
+                    label = "ID",
+                    data = location.id.toString(),
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
 
-            InfoRow(
-                label = "Dimensions",
-                data = location.dimension,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
+                InfoRow(
+                    label = "Type",
+                    data = location.type,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+
+                InfoRow(
+                    label = "Dimensions",
+                    data = location.dimension,
+                    modifier = Modifier.padding(vertical = 4.dp)
+                )
+            }
+
         }
     }
 }

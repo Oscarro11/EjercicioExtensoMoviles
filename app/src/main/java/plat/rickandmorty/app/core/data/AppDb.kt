@@ -12,7 +12,7 @@ import plat.rickandmorty.app.location.data.local.LocationEntity
         CharacterEntity::class,
         LocationEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class AppDatabase: RoomDatabase() {
     abstract fun characterDAO(): CharacterDAO

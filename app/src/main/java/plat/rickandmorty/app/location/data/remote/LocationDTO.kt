@@ -14,12 +14,12 @@ data class LocationDTO(
 
 fun LocationDTO.mapToModel(): Location {
     return Location(
-        id, name, type, dimension
+        id, name, type, dimension, false
     )
 }
 
 fun LocationDTO.mapToEntity(): LocationEntity {
     return LocationEntity(
-        id, name, type, dimension
+        id, name, type, dimension, false
     )
 }

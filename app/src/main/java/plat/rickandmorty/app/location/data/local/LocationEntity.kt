@@ -10,12 +10,13 @@ data class LocationEntity(
     @PrimaryKey val id: Int,
     val name: String,
     val type: String,
-    val dimension: String
+    val dimension: String,
+    val favorite: Boolean
 )
 
 fun LocationEntity.mapToModel(): Location {
     return Location(
-        id, name, type, dimension
+        id, name, type, dimension, favorite
     )
 }
 

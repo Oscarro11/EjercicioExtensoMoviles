@@ -7,12 +7,13 @@ data class Location(
     val id: Int,
     val name: String,
     val type: String,
-    val dimension: String
+    val dimension: String,
+    val favorite: Boolean
 )
 
 fun Location.mapToEntity(): LocationEntity {
     return LocationEntity(
-        id, name, type, dimension
+        id, name, type, dimension, favorite
     )
 }
 

@@ -7,5 +7,6 @@ interface LocationRepository{
     suspend fun checkLoadLocations()
     fun getLocations(): Flow<List<Location>>
     fun getLocation(id: Int): Flow<Location>
+    suspend fun toggleLocationFavorite(id: Int)
     suspend fun deleteLocations()
 }

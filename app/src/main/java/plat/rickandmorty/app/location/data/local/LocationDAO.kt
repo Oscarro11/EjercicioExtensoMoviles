@@ -23,4 +23,7 @@ interface LocationDAO {
 
     @Delete
     suspend fun deleteLocation(location: LocationEntity)
+
+    @Query("UPDATE locations SET favorite = NOT favorite WHERE id = :id")
+    suspend fun toggleLocationFavorite(id: Int)
 }
