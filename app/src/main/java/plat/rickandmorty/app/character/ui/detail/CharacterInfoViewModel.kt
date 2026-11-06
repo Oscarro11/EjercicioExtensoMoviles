@@ -23,6 +23,7 @@ data class CharacterInfoState(
 
 data class CharacterDraft(
     val name: String,
+    val image: String,
     val status: String,
     val species: String,
     val gender: String
@@ -77,6 +78,7 @@ class CharacterInfoViewModel @Inject constructor(
                 editionMode = true,
                 draft = CharacterDraft(
                     name = character.name,
+                    image = character.image,
                     status = character.status,
                     species = character.species,
                     gender = character.gender
@@ -94,6 +96,7 @@ class CharacterInfoViewModel @Inject constructor(
             repository.updateCharacter(
                 original.copy(
                     name = draft.name,
+                    image = draft.image,
                     status = draft.status,
                     species = draft.species,
                     gender = draft.gender

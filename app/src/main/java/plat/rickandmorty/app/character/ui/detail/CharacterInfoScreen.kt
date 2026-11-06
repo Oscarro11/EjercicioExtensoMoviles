@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -18,21 +18,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.FixedScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.components.InfoReadRow
 import plat.rickandmorty.app.core.components.InfoWriteRow
 import plat.rickandmorty.app.core.components.OptionDropdown
+import plat.rickandmorty.app.core.components.ProfileImage
+import plat.rickandmorty.app.core.components.ProfileImageWithPhotoSelector
 import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
 
@@ -157,13 +156,18 @@ private fun CharacterInfoContent(
             }
         )
 
-        AsyncImage(
-            model = character.image,
-            contentDescription = null,
-            contentScale = FixedScale(2f),
-            modifier = Modifier
-                .clip(CircleShape)
-        )
+        if (infoState.editionMode && draft != null) {
+            ProfileImageWithPhotoSelector(
+                model = character.image,
+                onModelChange = { onEvent(CharacterInfoEvent.ChangeDraft(draft.copy(image = it)))},
+                modifier = Modifier.size(200.dp)
+            )
+        } else {
+            ProfileImage(
+                model = character.image,
+                modifier = Modifier.size(200.dp)
+            )
+        }
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -175,7 +179,7 @@ private fun CharacterInfoContent(
                     onValueChange = { value ->
                         onEvent(CharacterInfoEvent.ChangeDraft(draft.copy(name = value)))
                     },
-                    label = { Text("Nombre: ") }
+                    label = { Text("Name: ") }
                 )
             } else {
                 Text(

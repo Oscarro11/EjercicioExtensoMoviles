@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -38,6 +39,7 @@ import coil3.compose.AsyncImagePainter.State.Empty.painter
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
+import plat.rickandmorty.app.core.components.ProfileImage
 import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
 
@@ -169,11 +171,9 @@ private fun CharacterCard(
             modifier = Modifier
                 .weight(0.2f)
         ) {
-            AsyncImage(
+            ProfileImage(
                 model = character.image,
-                contentDescription = null,
-                modifier = Modifier
-                    .clip(CircleShape)
+                modifier = Modifier.size(70.dp)
             )
         }
 
@@ -188,7 +188,7 @@ private fun CharacterCard(
                 text = character.name,
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.ExtraBold,
-                fontSize = if (character.name.length > 20) 4.em else 5.em
+                fontSize = if (character.name.length > 20) 3.5.em else 5.em
             )
 
             Spacer(
