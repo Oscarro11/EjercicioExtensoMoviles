@@ -24,7 +24,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.chores.ui.AppStateContent
-import plat.rickandmorty.app.core.components.InfoRow
+import plat.rickandmorty.app.core.components.InfoReadRow
 import plat.rickandmorty.app.core.data.AppEvent
 import plat.rickandmorty.app.core.data.AppState
 import plat.rickandmorty.app.location.data.domain.Location
@@ -132,19 +132,19 @@ private fun LocationInfoContent(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.padding(30.dp)
             ) {
-                InfoRow(
+                InfoReadRow(
                     label = "ID",
                     data = location.id.toString(),
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
 
-                InfoRow(
+                InfoReadRow(
                     label = "Type",
                     data = location.type,
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
 
-                InfoRow(
+                InfoReadRow(
                     label = "Dimensions",
                     data = location.dimension,
                     modifier = Modifier.padding(vertical = 4.dp)

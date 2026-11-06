@@ -50,6 +50,10 @@ class CharacterRepositoryImpl @Inject constructor (
         )
     }
 
+    override suspend fun updateCharacter(character: Character) {
+        dao.updateCharacter(character.mapToEntity())
+    }
+
     override suspend fun toggleCharacterFavorite(id: Int) {
         dao.toggleCharacterFavorite(id)
     }

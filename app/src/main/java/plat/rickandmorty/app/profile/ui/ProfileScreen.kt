@@ -19,7 +19,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.core.components.IconWithBackground
-import plat.rickandmorty.app.core.components.InfoRow
+import plat.rickandmorty.app.core.components.InfoReadRow
 import plat.rickandmorty.app.profile.data.ProfileState
 import plat.rickandmorty.app.profile.data.ProfileViewModel
 
@@ -63,13 +63,13 @@ private fun ProfileScreen(
             modifier = Modifier.padding(24.dp)
         )
 
-        InfoRow(
+        InfoReadRow(
             label = "Nombre",
             data = state.name,
             modifier = Modifier.padding(vertical = 6.dp)
         )
 
-        InfoRow(
+        InfoReadRow(
             label = "Carné",
             data = state.license,
             modifier = Modifier.padding(vertical = 6.dp)
