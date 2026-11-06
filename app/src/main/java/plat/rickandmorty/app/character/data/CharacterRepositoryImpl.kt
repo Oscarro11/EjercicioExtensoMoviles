@@ -11,11 +11,13 @@ import plat.rickandmorty.app.character.data.local.CharacterDAO
 import plat.rickandmorty.app.character.data.local.mapToModel
 import plat.rickandmorty.app.character.data.remote.CharacterApi
 import plat.rickandmorty.app.character.data.remote.mapToEntity
+import plat.rickandmorty.app.core.data.ProfileImageStorage
 import javax.inject.Inject
 
 class CharacterRepositoryImpl @Inject constructor (
     private val api: CharacterApi,
-    private val dao: CharacterDAO
+    private val dao: CharacterDAO,
+    private val imageStorage: ProfileImageStorage
 ) : CharacterRepository {
 
     override suspend fun checkLoadCharacters() {
@@ -51,7 +53,20 @@ class CharacterRepositoryImpl @Inject constructor (
     }
 
     override suspend fun updateCharacter(character: Character) {
-        dao.updateCharacter(character.mapToEntity())
+        val stored = dao.getCharacterById(character.id).first()
+        val oldImage = stored.image
+
+        val finalImage = if (imageStorage.needsCopy(character.image)) {
+            imageStorage.copyIn(character.image)
+        } else {
+            character.image
+        }
+
+        dao.updateCharacter(character.copy(image = finalImage).mapToEntity())
+
+        if (oldImage != finalImage) {
+            imageStorage.delete(oldImage)
+        }
     }
 
     override suspend fun toggleCharacterFavorite(id: Int) {
@@ -59,10 +74,13 @@ class CharacterRepositoryImpl @Inject constructor (
     }
 
     override suspend fun deleteCharacters() {
+        val images = dao.getCharacters().first().map {it.image}
         dao.deleteCharacters()
+        images.forEach { imageStorage.delete(it) }
     }
 
     override suspend fun deleteCharacter(character: Character) {
         dao.deleteCharacter(character.mapToEntity())
+        imageStorage.delete(character.image)
     }
 }

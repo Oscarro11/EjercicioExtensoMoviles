@@ -158,7 +158,7 @@ private fun CharacterInfoContent(
 
         if (infoState.editionMode && draft != null) {
             ProfileImageWithPhotoSelector(
-                model = character.image,
+                model = draft.image,
                 onModelChange = { onEvent(CharacterInfoEvent.ChangeDraft(draft.copy(image = it)))},
                 modifier = Modifier.size(200.dp)
             )
