@@ -1,5 +1,6 @@
 package plat.rickandmorty.app.core.components
 
+import android.R.attr.contentDescription
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -41,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.layout.ContentScale
+import plat.rickandmorty.app.R
 
 @Composable
 fun InfoReadRow(
@@ -134,12 +136,17 @@ fun OptionDropdown(
 
 @Composable
 fun ProfileImage(
-    model: String?,
+    image: String?,
     modifier: Modifier = Modifier
 ) {
+    val model = if (image == null || image == "") null else image
+
     AsyncImage(
         model = model,
         contentDescription = null,
+        placeholder = painterResource(R.drawable.user),
+        fallback = painterResource(R.drawable.user),
+        error = painterResource(R.drawable.user),
         contentScale = ContentScale.Crop,
         modifier = modifier
             .clip(CircleShape)
@@ -159,7 +166,7 @@ fun ProfileImageWithPhotoSelector(
     }
 
     ProfileImage(
-        model = model,
+        image = model,
         modifier = modifier.clickable {
             launcher.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)

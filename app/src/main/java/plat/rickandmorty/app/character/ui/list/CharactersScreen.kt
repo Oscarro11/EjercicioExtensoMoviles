@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
@@ -26,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -34,8 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import coil3.compose.AsyncImagePainter.State.Empty.painter
 import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
@@ -46,6 +43,7 @@ import plat.rickandmorty.app.core.data.AppState
 @Composable
 fun CharactersRoute(
     onCharacterClick: (Int) -> Unit,
+    onCreationClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CharactersViewModel = hiltViewModel()
 ){
@@ -56,6 +54,7 @@ fun CharactersRoute(
         state = state,
         filter = filter,
         onCharacterClick = onCharacterClick,
+        onCreationClick = onCreationClick,
         onViewModelChange = viewModel::onChange,
         onEvent = viewModel::onEvent,
         modifier = modifier
@@ -67,6 +66,7 @@ private fun CharactersScreen(
     state: AppState<List<Character>>,
     filter: CharactersFilter,
     onCharacterClick: (Int) -> Unit,
+    onCreationClick: () -> Unit,
     onViewModelChange: (AppEvent) -> Unit,
     onEvent: (CharactersEvent) -> Unit,
     modifier: Modifier = Modifier
@@ -81,6 +81,7 @@ private fun CharactersScreen(
         CharactersContent(
             characters = characters,
             onCharacterClick = onCharacterClick,
+            onCreationClick = onCreationClick,
             filter = filter,
             onEvent = onEvent,
             modifier = modifier
@@ -94,6 +95,7 @@ private fun CharactersContent(
     characters: List<Character>,
     filter: CharactersFilter,
     onCharacterClick: (Int) -> Unit,
+    onCreationClick: () -> Unit,
     onEvent: (CharactersEvent) -> Unit,
     modifier: Modifier = Modifier
 ){
@@ -112,11 +114,26 @@ private fun CharactersContent(
             )
         )
 
-        FilterChip(
-            selected = filter.onlyFavorites,
-            onClick = { onEvent(CharactersEvent.FilterFavorites) },
-            label = { Text("Favoritos") }
-        )
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            FilterChip(
+                selected = filter.onlyFavorites,
+                onClick = { onEvent(CharactersEvent.FilterFavorites) },
+                label = { Text("Favoritos") }
+            )
+
+            Spacer(
+                modifier = Modifier.size(20.dp)
+            )
+
+            Button(
+                onClick = onCreationClick
+            ) {
+                Text("Crear personaje")
+            }
+        }
 
         LazyColumn(
             modifier = Modifier.fillMaxSize()
@@ -172,7 +189,7 @@ private fun CharacterCard(
                 .weight(0.2f)
         ) {
             ProfileImage(
-                model = character.image,
+                image = character.image,
                 modifier = Modifier.size(70.dp)
             )
         }

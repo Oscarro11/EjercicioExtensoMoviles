@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -164,7 +165,7 @@ private fun CharacterInfoContent(
             )
         } else {
             ProfileImage(
-                model = character.image,
+                image = character.image,
                 modifier = Modifier.size(200.dp)
             )
         }
@@ -175,11 +176,11 @@ private fun CharacterInfoContent(
         ) {
             if (infoState.editionMode && draft != null) {
                 OutlinedTextField(
+                    label = { Text("Name: ") },
                     value = draft.name,
                     onValueChange = { value ->
                         onEvent(CharacterInfoEvent.ChangeDraft(draft.copy(name = value)))
-                    },
-                    label = { Text("Name: ") }
+                    }
                 )
             } else {
                 Text(
@@ -242,12 +243,13 @@ private fun CharacterWriteFields(
         modifier = Modifier
             .padding(30.dp)
     ) {
-        InfoWriteRow(
-            label = "Species",
-            data = draft.species,
-            onDataChange = { species ->
+        OutlinedTextField(
+            label = { Text("Species: ") },
+            value = draft.species,
+            onValueChange = { species ->
                 onDraftChange(draft.copy(species = species))
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         )
 
         OptionDropdown(

@@ -52,6 +52,32 @@ class CharacterRepositoryImpl @Inject constructor (
         )
     }
 
+    override suspend fun addCharacter(
+        name: String,
+        image: String?,
+        status: String,
+        species: String,
+        gender: String
+    ) {
+        val finalImage = when {
+            image == null -> null
+            imageStorage.needsCopy(image) -> imageStorage.copyIn(image)
+            else -> image
+        }
+
+        dao.insertCharacter(
+            Character(
+                id = 0, //Auto generated in DB
+                name = name,
+                image = finalImage ?: "",
+                status = status,
+                species = species,
+                gender = gender,
+                favorite = false
+            ).mapToEntity()
+        )
+    }
+
     override suspend fun updateCharacter(character: Character) {
         val stored = dao.getCharacterById(character.id).first()
         val oldImage = stored.image

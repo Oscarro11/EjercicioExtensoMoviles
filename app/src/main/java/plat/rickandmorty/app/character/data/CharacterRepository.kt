@@ -7,6 +7,13 @@ interface CharacterRepository {
     suspend fun checkLoadCharacters()
     fun getCharacters(): Flow<List<Character>>
     fun getCharacter(id: Int): Flow<Character>
+    suspend fun addCharacter(
+        name: String,
+        image: String?,
+        status: String,
+        species: String,
+        gender: String
+    )
     suspend fun updateCharacter(character: Character)
     suspend fun toggleCharacterFavorite(id: Int)
     suspend fun deleteCharacters()

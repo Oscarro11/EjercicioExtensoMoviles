@@ -6,7 +6,7 @@ import plat.rickandmorty.app.character.data.domain.Character
 
 @Entity(tableName = "characters")
 data class CharacterEntity (
-    @PrimaryKey val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int,
     val name: String,
     val status: String,
     val species: String,
