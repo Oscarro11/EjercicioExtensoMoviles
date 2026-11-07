@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import plat.rickandmorty.app.character.data.CharacterRepository
-import plat.rickandmorty.app.core.Dependencies
 import plat.rickandmorty.app.core.data.PreferencesDataStore
 import plat.rickandmorty.app.location.data.LocationRepository
 import javax.inject.Inject

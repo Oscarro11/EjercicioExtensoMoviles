@@ -10,7 +10,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -19,21 +18,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.BlendMode.Companion.Screen
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import plat.rickandmorty.app.R
-import plat.rickandmorty.app.character.data.domain.Character
-import plat.rickandmorty.app.core.components.InfoWriteRow
 import plat.rickandmorty.app.core.components.OptionDropdown
-import plat.rickandmorty.app.core.components.ProfileImage
 import plat.rickandmorty.app.core.components.ProfileImageWithPhotoSelector
-import plat.rickandmorty.app.core.data.AppEvent
-import plat.rickandmorty.app.core.data.AppState
 
 @Composable
 fun CharacterCreationRoute(

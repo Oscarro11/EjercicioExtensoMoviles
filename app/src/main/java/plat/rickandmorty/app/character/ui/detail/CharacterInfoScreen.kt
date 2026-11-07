@@ -29,7 +29,6 @@ import plat.rickandmorty.app.R
 import plat.rickandmorty.app.character.data.domain.Character
 import plat.rickandmorty.app.chores.ui.AppStateContent
 import plat.rickandmorty.app.core.components.InfoReadRow
-import plat.rickandmorty.app.core.components.InfoWriteRow
 import plat.rickandmorty.app.core.components.OptionDropdown
 import plat.rickandmorty.app.core.components.ProfileImage
 import plat.rickandmorty.app.core.components.ProfileImageWithPhotoSelector

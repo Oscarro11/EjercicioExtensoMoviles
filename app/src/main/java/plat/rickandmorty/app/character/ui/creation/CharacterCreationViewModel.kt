@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import plat.rickandmorty.app.character.data.CharacterRepository
-import plat.rickandmorty.app.character.data.domain.Character
 import javax.inject.Inject
 
 data class CharacterCreationState(

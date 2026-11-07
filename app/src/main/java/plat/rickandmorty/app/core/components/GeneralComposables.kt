@@ -1,11 +1,11 @@
 package plat.rickandmorty.app.core.components
 
-import android.R.attr.contentDescription
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -35,13 +35,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import androidx.compose.foundation.clickable
-import androidx.compose.ui.layout.ContentScale
 import plat.rickandmorty.app.R
 
 @Composable
@@ -64,32 +63,6 @@ fun InfoReadRow(
             text = data,
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
-        )
-    }
-}
-
-@Composable
-fun InfoWriteRow(
-    label: String,
-    data: String,
-    onDataChange: (String) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = "$label:",
-            style = MaterialTheme.typography.bodyMedium
-        )
-
-        OutlinedTextField(
-            value = data,
-            onValueChange = onDataChange,
-            singleLine = true,
-            textStyle = MaterialTheme.typography.bodyMedium
         )
     }
 }
